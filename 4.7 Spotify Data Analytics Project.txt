@@ -1,0 +1,34 @@
+--What is the average danceability by artist and track?
+select artist_name, track_name, danceability
+from BIT_DB.Spotifydata
+group by artist_name;
+
+--Who are the top 10 artists based on popularity? 
+select artist_name, popularity
+from BIT_DB.Spotifydata
+order by popularity desc
+limit 10;
+
+--What artist released the longest song? 
+select artist_name, duration_ms
+from BIT_DB.Spotifydata
+order by duration_ms desc
+limit 1;
+
+--What's the average danceability for the 10 most popular songs?
+select track_name, danceability
+from BIT_DB.Spotifydata
+order by danceability desc
+limit 10;
+
+--Calculate the average popularity for the artists in the Spotify data table. Then, for every artist with an average popularity of 90 or above, show their name, their average popularity, and label them as a “Top Star”.
+WITH popularity_average_CTE AS (
+  SELECT
+  s.artist_name, AVG(s.Popularity) as average_popularity
+  FROM Spotifydata s
+  group by artist_name
+)
+
+SELECT artist_name, average_popularity, 'Top Star' as tag
+from popularity_average_CTE
+where average_popularity>=90;

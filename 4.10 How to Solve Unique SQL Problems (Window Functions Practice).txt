@@ -1,0 +1,34 @@
+-- QUERY #1 
+-- Get an overview of the data. Instead of looking at the entire table, 10 rows will do. 
+SELECT *
+FROM CityBikeLanes 
+LIMIT 10;
+
+-- QUERY #2 
+-- Run this SQL and make note of what you see. Why are there two rows in the results? 
+SELECT * FROM CityBikeLanes WHERE street='Walnut';
+
+--Let's say you work as a data analyst for your city, and your boss wants a list of all the bike lanes that have an average safety rating of 4.0 or higher. 
+--She also wants to see the average safety rating for each of those bike lanes, and a label that says "Safe Lane".
+--THE CODE BELOW THIS LINE IS THE CTE
+with safety_average_cte as (
+select street, avg(safetyrating) as rating
+from CityBikeLanes
+group by street
+)
+
+--THE CODE BELOW THIS LINE IS THE SQL QUERY PULLING FROM THE CTE
+select street, rating, 'Safe Lane' as Label
+from safety_average_CTE
+where rating>=4
+;
+
+--You need to give your boss the list of all the bike lanes, both safety ratings for each lane given by the two technicians, the average safety rating for each lane, and a label with the recommendation as "Remove", "Leave As-Is", or "Improvements Needed".
+SELECT street, safetyrating,
+AVG(safetyrating) OVER (PARTITION BY street) as "Average_safety_rating",
+CASE when AVG(safetyrating) OVER (PARTITION BY street) >4 then "Leave as-is"
+when AVG(safetyrating) OVER (PARTITION BY street) <2.5 then "Remove"
+else "Improvement Needed"
+End as "Recommendation"
+FROM CityBikeLanes
+;    

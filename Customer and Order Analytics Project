@@ -1,0 +1,7 @@
+--Which locations in New York received at least 3 orders in January, and how many orders did they each receive?
+
+select location, sum(quantity) Sold
+from BIT_DB.JanSales
+where location like '%NY%'
+group by location
+having Sold >2;
